@@ -276,7 +276,7 @@
 
     <div class="hero-full-width-bg">
         <div class="hero-container">
-            <div class="blue-form-box">
+            <div class="blue-form-box" id="check-form">
                 <h1>Проверить данные ОСАГО</h1>
                 <div class="form-area">
                     <div class="row-inputs">
@@ -366,6 +366,13 @@
             const p = new URLSearchParams(window.location.search);
             if (p.get('s')) document.getElementById('s_in').value = p.get('s').toUpperCase();
             if (p.get('n')) document.getElementById('n_in').value = p.get('n');
+       // Плавная прокрутка к форме, если в ссылке есть #check-form
+    if (window.location.hash === "#check-form") {
+        setTimeout(() => {
+            const element = document.getElementById('check-form');
+            if (element) element.scrollIntoView({ behavior: 'smooth' });
+        }, 500); // Задержка полсекунды, чтобы сайт успел загрузиться
+    } 
         }
 
         function refreshCaptcha() {
