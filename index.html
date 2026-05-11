@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>АО «НСИС» | Официальный сайт</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
+    <style>
+        :root {
+            --main-blue: #163193;
+            --hero-blue: #2342A3;
+            --input-bg: rgba(255, 255, 255, 0.1);
+            --modal-light-bg: #f4f6f9;
+            --green: #28a745;
+        }
+
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--main-blue); 
+            color: white; 
+            overflow-x: hidden; 
+            -webkit-font-smoothing: antialiased; 
+        }
+
+        /* --- ШАПКА САЙТА --- */
+        header { 
+            max-width: 1440px; 
+            margin: 0 auto; 
+            padding: 20px 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .header-left { display: flex; align-items: center; gap: 45px; }
+        .main-logo { height: 100px; display: block; object-fit: contain; }
+        nav { display: flex; gap: 25px; align-items: center; }
+        nav a { color: white; text-decoration: none; font-size: 14px; opacity: 0.8; transition: 0.2s; }
+        nav a:hover { opacity: 1; }
+        .btn-login { 
+            background: white; 
+            color: var(--main-blue); 
+            border: none; 
+            padding: 10px 32px; 
+            border-radius: 30px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: 0.2s; 
+        }
+        .btn-login:hover { background: #f0f0f0; }
+
+        /* --- КАРТОЧКИ УСЛУГ (РАБОЧИЕ ССЫЛКИ) --- */
+        .cards-container { 
+            max-width: 1440px; 
+            margin: 0 auto 50px; 
+            padding: 0 50px; 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 15px; 
+        }
+        .service-card { 
+            background: white; 
+            border-radius: 28px; 
+            padding: 25px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            text-align: center; 
+            color: #1a202c; 
+            text-decoration: none; 
+            box-sizing: border-box; 
+            transition: transform 0.2s, box-shadow 0.2s; 
+        }
+        .service-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+        .icon-circle { 
+            width: 48px; 
+            height: 48px; 
+            background: #EDF2F7; 
+            border-radius: 14px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: var(--main-blue); 
+            margin-bottom: 15px; 
+            font-size: 20px; 
+        }
+        .service-card h3 { margin: 0; font-size: 14px; font-weight: 500; line-height: 1.2; }
+
+        /* --- ОСНОВНАЯ ФОРМА ПОИСКА --- */
+        .hero-full-width-bg { background: white; width: 100%; padding: 80px 0; border-radius: 80px 80px 0 0; }
+        .hero-container { max-width: 1440px; margin: 0 auto; padding: 0 50px; }
+        .blue-form-box { 
+            background: var(--hero-blue); 
+            border-radius: 56px; 
+            padding: 50px 80px; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            box-sizing: border-box; 
+        }
+        .blue-form-box h1 { font-size: 32px; font-weight: 600; margin: 0 0 30px 0; color: white; }
+        .form-area { display: flex; flex-direction: column; gap: 20px; }
+        .input-wrap { display: flex; flex-direction: column; gap: 8px; }
+        .input-wrap label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+        .input-style { 
+            background: var(--input-bg); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            padding: 15px; 
+            border-radius: 14px; 
+            color: white; 
+            outline: none; 
+            height: 52px; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+            width: 100%; 
+        }
+        .row-inputs { display: flex; gap: 20px; flex-wrap: wrap; }
+        #wrap-s { width: 100px; }
+        #wrap-n { width: 220px; }
+        #date_picker { width: 160px; }
+        
+        /* Капча */
+        .captcha-row { display: flex; align-items: center; gap: 15px; }
+        .captcha-display { 
+            background: #dfe4f2; 
+            color: var(--main-blue); 
+            width: 140px; 
+            height: 52px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 14px; 
+            font-weight: 900; 
+            font-size: 22px; 
+            user-select: none;
+        }
+        .btn-refresh { background: none; border: none; color: white; cursor: pointer; font-size: 18px; opacity: 0.6; transition: 0.2s; }
+        .btn-refresh:hover { opacity: 1; }
+        .btn-submit { 
+            background: white; 
+            color: var(--main-blue); 
+            border: none; 
+            padding: 20px; 
+            border-radius: 60px; 
+            font-weight: 700; 
+            font-size: 18px; 
+            cursor: pointer; 
+            width: 100%; 
+            margin-top: 10px; 
+            transition: 0.2s;
+        }
+        .btn-submit:hover { background: #f0f0f0; }
+
+        /* --- МОДАЛЬНОЕ ОКНО --- */
+        .modal-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: var(--modal-light-bg); 
+            display: none; 
+            flex-direction: column; 
+            z-index: 3000; 
+            overflow-y: auto; 
+            color: #1a202c; 
+        }
+        .modal-header { 
+            padding: 25px 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            background: white; 
+            border-bottom: 1px solid #edf2f7; 
+            position: sticky; 
+            top: 0; 
+            z-index: 3002;
+        }
+        .modal-header h2 { margin: 0; font-size: 22px; font-weight: 600; color: #2d3748; }
+        .close-x { font-size: 35px; color: #cbd5e0; cursor: pointer; border: none; background: none; line-height: 1; }
+        .date-label { background: #edf2f7; padding: 5px 12px; border-radius: 15px; font-size: 11px; color: #718096; margin-top: 10px; display: inline-block; }
+        
+        .modal-body { padding: 0 50px 120px 50px; max-width: 850px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+        .section-title { color: #718096; font-size: 14px; margin: 25px 0 12px 5px; font-weight: 600; }
+        .card-res { background: white; border-radius: 28px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+        
+        /* Специальная строка статуса (Как на скриншотах) */
+        .contract-header-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f7fafc; margin-bottom: 5px; }
+        .field-label { color: #a0aec0; font-size: 12px; margin-bottom: 2px; }
+        .field-value { font-size: 16px; font-weight: 600; }
+        
+        /* Зеленая галочка и слово в рамке */
+        .status-badge { 
+            background: #e6f6ec; 
+            color: var(--green); 
+            border: 1px solid rgba(40, 167, 69, 0.3); 
+            padding: 8px 16px; 
+            border-radius: 50px; 
+            font-size: 13px; 
+            font-weight: 700; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        
+        .data-row { display: flex; flex-direction: column; padding: 12px 0; border-bottom: 1px solid #f7fafc; }
+        .data-row:last-child { border: none; }
+        .note-box { font-size: 13px; color: #718096; line-height: 1.5; padding: 10px 5px; font-style: italic; }
+
+        /* Кнопка закрытия внизу для мобилок */
+        .footer-close-btn-wrap {
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            background: white; 
+            padding: 20px; 
+            border-top: 1px solid #eee; 
+            display: flex; 
+            justify-content: center; 
+            z-index: 3001; 
+            box-sizing: border-box;
+        }
+
+        /* --- МОБИЛЬНАЯ ВЕРСИЯ --- */
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 20px 10px; }
+            .header-left { flex-direction: column; gap: 15px; width: 100%; }
+            .main-logo { height: 70px; margin: 0 auto; }
+            nav { justify-content: center; flex-wrap: wrap; gap: 10px; }
+            
+            .cards-container { grid-template-columns: 1fr; padding: 0 15px; }
+            .hero-full-width-bg { padding: 30px 0; border-radius: 40px 40px 0 0; }
+            .blue-form-box { padding: 30px 20px; border-radius: 35px; width: 100%; }
+            
+            .row-inputs { flex-wrap: nowrap; gap: 10px; }
+            #wrap-s { flex: 0 0 30%; width: auto; }
+            #wrap-n { flex: 1; width: auto; }
+            #date_picker { width: 100%; }
+            
+            .modal-header { padding: 20px; }
+            .modal-body { padding: 10px 15px 100px 15px; }
+            .contract-header-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+        }
+    </style>
+</head>
+<body onload="initApp()">
+
+    <header>
+        <div class="header-left">
+            <img src="444.webp" alt="НСИС" class="main-logo">
+            <nav>
+                <a href="https://nsis.ru/service/">О сервисе</a>
+                <a href="https://nsis.ru/products/osago/">Авто</a>
+                <a href="https://nsis.ru/products/property/">Жилье</a>
+                <a href="https://nsis.ru/career/">Карьера</a>
+                <a href="https://nsis.ru/contacts/">Контакты</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <button class="btn-login" onclick="window.location.href='https://lk.nsis.ru/'">Войти</button>
+        </div>
+    </header>
+
+    <div class="cards-container">
+        <a href="https://nsis.ru/products/osago/check/" class="service-card"><div class="icon-circle"><i class="fa-regular fa-file-lines"></i></div><h3>Проверить наличие полиса ОСАГО</h3></a>
+        <a href="https://lk.nsis.ru/kbm" class="service-card"><div class="icon-circle"><i class="fa-solid fa-percent"></i></div><h3>Узнать свой КБМ</h3></a>
+        <a href="https://lk.nsis.ru/history" class="service-card"><div class="icon-circle"><i class="fa-regular fa-copy"></i></div><h3>Получить страховую историю</h3></a>
+        <a href="https://nsis.ru/products/osago/driver-check/" class="service-card"><div class="icon-circle"><i class="fa-solid fa-user-check"></i></div><h3>Проверить водителя</h3></a>
+        <a href="https://nsis.ru/arbitration/" class="service-card"><div class="icon-circle"><i class="fa-solid fa-briefcase"></i></div><h3>Арбитражным управляющим</h3></a>
+    </div>
+
+    <div class="hero-full-width-bg">
+        <div class="hero-container">
+            <div class="blue-form-box">
+                <h1>Проверить данные ОСАГО</h1>
+                <div class="form-area">
+                    <div class="row-inputs">
+                        <div class="input-wrap" id="wrap-s"><label>Серия</label><input type="text" id="s_in" class="input-style" maxlength="3" placeholder="XXX"></div>
+                        <div class="input-wrap" id="wrap-n"><label>Номер</label><input type="text" id="n_in" class="input-style" placeholder="0000000000"></div>
+                    </div>
+                    <div class="input-wrap"><label>Дата запроса</label><input type="text" id="date_picker" class="input-style"></div>
+                    <div class="captcha-row">
+                        <div id="cp_box" class="captcha-display">000000</div>
+                        <button class="btn-refresh" onclick="refreshCaptcha()"><i class="fa-solid fa-rotate"></i></button>
+                        <input type="text" id="cp_input" class="input-style" style="width:120px;" placeholder="Код">
+                    </div>
+                    <button class="btn-submit" onclick="processSearch()">Проверить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-header">
+            <div><h2>Данные полиса ОСАГО</h2><div class="date-label" id="res_date_label">на сегодня</div></div>
+            <button class="close-x" onclick="closeModal()">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="section-title">Сведения о бланке</div>
+            <div class="card-res">
+                <div class="field-group"><div class="field-label">Серия:</div><div class="field-value" id="res_s1">---</div></div>
+                <div class="field-group" style="margin-top:10px;"><div class="field-label">Номер:</div><div class="field-value" id="res_n1">---</div></div>
+                <div style="background: #e6f6ec; color: var(--green); padding: 6px 12px; border-radius: 50px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; margin-top:15px;"><i class="fa-regular fa-circle-check"></i> Выдан страхователю</div>
+            </div>
+
+            <div class="section-title">Сведения о договоре</div>
+            <div class="card-res">
+                <div class="contract-header-row">
+                    <div>
+                        <div class="field-label">Серия и номер договора:</div>
+                        <div class="field-value"><span id="res_s2">---</span> № <span id="res_n2">---</span></div>
+                    </div>
+                    <div class="status-badge">
+                        <i class="fa-solid fa-check"></i> Действует
+                    </div>
+                </div>
+
+                <div class="data-row"><div class="field-label">Страховая организация:</div><div class="field-value" id="res_org">---</div></div>
+                <div class="data-row"><div class="field-label">Период использования:</div><div class="field-value" id="res_per">---</div></div>
+                <div class="data-row"><div class="field-label">Транспортное средство:</div><div class="field-value" id="res_car">---</div></div>
+                <div class="data-row"><div class="field-label">VIN:</div><div class="field-value" id="res_vin">---</div></div>
+                <div class="data-row"><div class="field-label">Гос. номер:</div><div class="field-value" id="res_plate">---</div></div>
+                <div class="note-box">Покрытие не распространяется на территорию Республики Беларусь.</div>
+            </div>
+        </div>
+        
+        <div class="footer-close-btn-wrap">
+            <button onclick="closeModal()" style="width:100%; max-width:400px; padding:15px; border-radius:15px; border:1px solid #ccc; background:white; font-weight:600; cursor:pointer;">Закрыть</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+    <script>
+        // --- БАЗА ДАННЫХ ПОЛИСОВ ---
+        const db = {
+            "5604829713": { 
+                org: "АО «Группа Ренессанс Страхование»", 
+                per: "11.05.2026 - 10.05.2027", 
+                car: "SUBARU FORESTER", 
+                vin: "JF2SJAEC8EH41****", 
+                plate: "12***N" 
+            },
+            "111": { 
+                org: "ПАО «Ингосстрах»", 
+                per: "01.01.2026 - 31.12.2026", 
+                car: "MERCEDES-BENZ S-CLASS", 
+                vin: "WDB2200671A****", 
+                plate: "A777AA" 
+            }
+            // Сюда можно добавлять новые полисы по шаблону выше
+        };
+
+        function initApp() {
+            refreshCaptcha();
+            // Настройка выбора даты
+            flatpickr("#date_picker", { locale: "ru", dateFormat: "d.m.Y", defaultDate: "today" });
+            
+            // ЛОГИКА АВТОЗАПОЛНЕНИЯ (QR-КОД)
+            const p = new URLSearchParams(window.location.search);
+            if (p.get('s')) document.getElementById('s_in').value = p.get('s').toUpperCase();
+            if (p.get('n')) document.getElementById('n_in').value = p.get('n');
+        }
+
+        function refreshCaptcha() {
+            document.getElementById('cp_box').innerText = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('cp_input').value = "";
+        }
+
+        function processSearch() {
+            const s = document.getElementById('s_in').value.toUpperCase();
+            const n = document.getElementById('n_in').value;
+            const cap = document.getElementById('cp_input').value;
+            const realCap = document.getElementById('cp_box').innerText;
+            const data = db[n]; // Поиск в базе по номеру
+
+            if (data && cap === realCap) {
+                // Подстановка даты
+                document.getElementById('res_date_label').innerText = "на " + document.getElementById('date_picker').value;
+                
+                // Подстановка данных из базы в модальное окно
+                document.getElementById('res_s1').innerText = document.getElementById('res_s2').innerText = s || "XXX";
+                document.getElementById('res_n1').innerText = document.getElementById('res_n2').innerText = n;
+                document.getElementById('res_org').innerText = data.org;
+                document.getElementById('res_per').innerText = data.per;
+                document.getElementById('res_car').innerText = data.car;
+                document.getElementById('res_vin').innerText = data.vin;
+                document.getElementById('res_plate').innerText = data.plate;
+                
+                // Показ окна
+                document.getElementById('modal').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            } else {
+                alert("Полис не найден или неверный код капчи.");
+                refreshCaptcha();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            refreshCaptcha();
+        }
+    </script>
+</body>
+</html>
