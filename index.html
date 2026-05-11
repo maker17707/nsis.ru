@@ -385,26 +385,45 @@
             const n = document.getElementById('n_in').value;
             const cap = document.getElementById('cp_input').value;
             const realCap = document.getElementById('cp_box').innerText;
-            const data = db[n]; // Поиск в базе по номеру
+            const data = db[n];
+            const btn = document.querySelector('.btn-submit');
 
-            if (data && cap === realCap) {
-                // Подстановка даты
-                document.getElementById('res_date_label').innerText = "на " + document.getElementById('date_picker').value;
-                
-                // Подстановка данных из базы в модальное окно
-                document.getElementById('res_s1').innerText = document.getElementById('res_s2').innerText = s || "XXX";
-                document.getElementById('res_n1').innerText = document.getElementById('res_n2').innerText = n;
-                document.getElementById('res_org').innerText = data.org;
-                document.getElementById('res_per').innerText = data.per;
-                document.getElementById('res_car').innerText = data.car;
-                document.getElementById('res_vin').innerText = data.vin;
-                document.getElementById('res_plate').innerText = data.plate;
-                
-                // Показ окна
-                document.getElementById('modal').style.display = 'flex';
-                document.body.style.overflow = 'hidden';
+            if (cap !== realCap) {
+                alert("Неверный код с картинки");
+                refreshCaptcha();
+                return;
+            }
+
+            if (data) {
+                // 1. Меняем текст на кнопке и делаем её полупрозрачной
+                btn.innerText = "Поиск в базе данных...";
+                btn.style.opacity = "0.7";
+                btn.disabled = true;
+
+                // 2. Устанавливаем задержку (например, 1.5 секунды = 1500 миллисекунд)
+                setTimeout(() => {
+                    // Подстановка данных
+                    document.getElementById('res_date_label').innerText = "на " + document.getElementById('date_picker').value;
+                    document.getElementById('res_s1').innerText = document.getElementById('res_s2').innerText = s || "XXX";
+                    document.getElementById('res_n1').innerText = document.getElementById('res_n2').innerText = n;
+                    document.getElementById('res_org').innerText = data.org;
+                    document.getElementById('res_per').innerText = data.per;
+                    document.getElementById('res_car').innerText = data.car;
+                    document.getElementById('res_vin').innerText = data.vin;
+                    document.getElementById('res_plate').innerText = data.plate;
+                    
+                    // Показываем окно
+                    document.getElementById('modal').style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+
+                    // Возвращаем кнопку в исходное состояние
+                    btn.innerText = "Проверить";
+                    btn.style.opacity = "1";
+                    btn.disabled = false;
+                }, 1500); 
+
             } else {
-                alert("Полис не найден или неверный код капчи.");
+                alert("Полис не найден");
                 refreshCaptcha();
             }
         }
