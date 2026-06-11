@@ -54,7 +54,7 @@
         }
         .btn-login:hover { background: #f0f0f0; }
 
-        /* --- КАРТОЧКИ УСЛУГ (РАБОЧИЕ ССЫЛКИ) --- */
+        /* --- КАРТОЧКИ УСЛУГ --- */
         .cards-container { 
             max-width: 1440px; 
             margin: 0 auto 50px; 
@@ -189,12 +189,11 @@
         .section-title { color: #718096; font-size: 14px; margin: 25px 0 12px 5px; font-weight: 600; }
         .card-res { background: white; border-radius: 28px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
         
-        /* Специальная строка статуса (Как на скриншотах) */
         .contract-header-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f7fafc; margin-bottom: 5px; }
+        .field-group { display: flex; flex-direction: column; }
         .field-label { color: #a0aec0; font-size: 12px; margin-bottom: 2px; }
         .field-value { font-size: 16px; font-weight: 600; }
         
-        /* Зеленая галочка и слово в рамке */
         .status-badge { 
             background: #e6f6ec; 
             color: var(--green); 
@@ -212,7 +211,6 @@
         .data-row:last-child { border: none; }
         .note-box { font-size: 13px; color: #718096; line-height: 1.5; padding: 10px 5px; font-style: italic; }
 
-        /* Кнопка закрытия внизу для мобилок */
         .footer-close-btn-wrap {
             position: fixed; 
             bottom: 0; 
@@ -238,6 +236,7 @@
             .blue-form-box { padding: 30px 20px; border-radius: 35px; width: 100%; }
             
             .row-inputs { flex-wrap: nowrap; gap: 10px; }
+            .input-wrap label { font-size: 10px; }
             #wrap-s { flex: 0 0 30%; width: auto; }
             #wrap-n { flex: 1; width: auto; }
             #date_picker { width: 100%; }
@@ -338,41 +337,64 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
     <script>
-        // --- БАЗА ДАННЫХ ПОЛИСОВ ---
+        // --- БАЗА ДАННЫХ ПОЛИСОВ (Сюда можно писать полные VIN и госномер, скрипт закроет их звёздами сам) ---
         const db = {
             "5604829713": { 
                 org: "ПАО ИНГОССТРАХ", 
                 per: "11.05.2026 - 25.05.2026", 
                 car: "SUBARU FORESTER", 
-                vin: "JF2SJAEC8EH41****", 
-                plate: "12***N" 
+                vin: "JF2SJAEC8EH411122", 
+                plate: "A123AA777" 
             },
             "5604829778": { 
                 org: "ПАО «Ингосстрах»", 
                 per: "11.05.2026 - 25.05.2026", 
                 car: "Subaru Outback", 
-                vin: "454BRCKC3C322****", 
-                plate: "04***M" 
+                vin: "454BRCKC3C3225566", 
+                plate: "O044MM197" 
             }
-            // Сюда можно добавлять новые полисы по шаблону выше
         };
+
+        // Функция маскирования (закрывает звёздочками центральную часть)
+        function maskValue(str, type) {
+            if (!str) return "---";
+            str = str.toUpperCase();
+            if (type === 'vin') {
+                if (str.length < 10) return str;
+                return str.substring(0, 5) + "*".repeat(str.length - 9) + str.substring(str.length - 4);
+            }
+            if (type === 'plate') {
+                if (str.length < 5) return str;
+                return str.substring(0, 2) + "***" + str.substring(str.length - 1);
+            }
+            return str;
+        }
 
         function initApp() {
             refreshCaptcha();
-            // Настройка выбора даты
             flatpickr("#date_picker", { locale: "ru", dateFormat: "d.m.Y", defaultDate: "today" });
             
-            // ЛОГИКА АВТОЗАПОЛНЕНИЯ (QR-КОД)
+            // Считывание параметров из QR-кода (Унифицировано под ?series=...&number=...)
             const p = new URLSearchParams(window.location.search);
-            if (p.get('s')) document.getElementById('s_in').value = p.get('s').toUpperCase();
-            if (p.get('n')) document.getElementById('n_in').value = p.get('n');
-       // Плавная прокрутка к форме, если в ссылке есть #check-form
-    if (window.location.hash === "#check-form") {
-        setTimeout(() => {
-            const element = document.getElementById('check-form');
-            if (element) element.scrollIntoView({ behavior: 'smooth' });
-        }, 1500); // Задержка полсекунды, чтобы сайт успел загрузиться
-    } 
+            const urlSeries = p.get('series');
+            const urlNumber = p.get('number');
+            const autoSubmit = p.get('auto'); // Секретный параметр автооткрытия
+
+            if (urlSeries) document.getElementById('s_in').value = urlSeries.toUpperCase();
+            if (urlNumber) document.getElementById('n_in').value = urlNumber;
+
+            // Если в ссылке есть #check-form, плавно скроллим
+            if (window.location.hash === "#check-form") {
+                setTimeout(() => {
+                    const element = document.getElementById('check-form');
+                    if (element) element.scrollIntoView({ behavior: 'smooth' });
+                }, 500); 
+            } 
+
+            // СУПЕР-ФИЧА ДЛЯ QR-КОДА: если в ссылке есть &auto=true, окно откроется САМО без ввода капчи
+            if (urlSeries && urlNumber && autoSubmit === 'true') {
+                executeSearch(urlSeries.toUpperCase(), urlNumber, true);
+            }
         }
 
         function refreshCaptcha() {
@@ -385,8 +407,6 @@
             const n = document.getElementById('n_in').value;
             const cap = document.getElementById('cp_input').value;
             const realCap = document.getElementById('cp_box').innerText;
-            const data = db[n];
-            const btn = document.querySelector('.btn-submit');
 
             if (cap !== realCap) {
                 alert("Неверный код с картинки");
@@ -394,29 +414,36 @@
                 return;
             }
 
+            executeSearch(s, n, false);
+        }
+
+        // Основная функция поиска и вывода модального окна
+        function executeSearch(s, n, isByPassCaptcha) {
+            const data = db[n];
+            const btn = document.querySelector('.btn-submit');
+
             if (data) {
-                // 1. Меняем текст на кнопке и делаем её полупрозрачной
                 btn.innerText = "Поиск в базе данных...";
                 btn.style.opacity = "0.7";
                 btn.disabled = true;
 
-                // 2. Устанавливаем задержку (например, 1.5 секунды = 1500 миллисекунд)
+                // Ставим анимацию ожидания базы данных на 4.5 секунды
                 setTimeout(() => {
-                    // Подстановка данных
                     document.getElementById('res_date_label').innerText = "на " + document.getElementById('date_picker').value;
                     document.getElementById('res_s1').innerText = document.getElementById('res_s2').innerText = s || "XXX";
                     document.getElementById('res_n1').innerText = document.getElementById('res_n2').innerText = n;
                     document.getElementById('res_org').innerText = data.org;
                     document.getElementById('res_per').innerText = data.per;
                     document.getElementById('res_car').innerText = data.car;
-                    document.getElementById('res_vin').innerText = data.vin;
-                    document.getElementById('res_plate').innerText = data.plate;
                     
-                    // Показываем окно
+                    // Заменяем символы на звездочки на лету при выводе в окно
+                    document.getElementById('res_vin').innerText = maskValue(data.vin, 'vin');
+                    document.getElementById('res_plate').innerText = maskValue(data.plate, 'plate');
+                    
+                    // Показываем наше красивое модальное окно
                     document.getElementById('modal').style.display = 'flex';
                     document.body.style.overflow = 'hidden';
 
-                    // Возвращаем кнопку в исходное состояние
                     btn.innerText = "Проверить";
                     btn.style.opacity = "1";
                     btn.disabled = false;
